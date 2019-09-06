@@ -14,3 +14,10 @@ Design choice of location  (need to be normalized ?)
 
 Future work (normalize lat lng) so many user, many locations,
 each pair contain note, timestamp, etc
+
+
+Using mog
+
+Apply Repository pattern on top of EF Core unit of work pattern
+
+using xUnit.

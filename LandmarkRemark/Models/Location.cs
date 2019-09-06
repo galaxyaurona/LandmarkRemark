@@ -4,12 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LandmarkRemark.Models
 {
-    public class Location
+    public class Location : EntityBase
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
+        
         public double Lat { get; set; }
         public double Lng { get; set; }
         public string Note { get; set; }

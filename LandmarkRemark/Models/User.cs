@@ -5,11 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LandmarkRemark.Models
 {
-    public class User
+    public class User : EntityBase
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         public string Username { get; set; }
         public List<Location> Locations { get; set; }
     }

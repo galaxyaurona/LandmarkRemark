@@ -36,7 +36,7 @@ namespace LandmarkRemark.Controllers
         {
             // try to get the user with username (ignore case)
             var user = await _context.Users.FirstOrDefaultAsync(e => e.Username.Equals(username, StringComparison.OrdinalIgnoreCase) );
-            if (user.Equals(default(User))) {
+            if (user == default(User)) {
                 // add new user if doesn't exist
                 var newUser = await _context.Users.AddAsync( new User(){
                     Username = username
