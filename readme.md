@@ -21,3 +21,12 @@ Using mog
 Apply Repository pattern on top of EF Core unit of work pattern
 
 using xUnit.
+
+cd into ClientApp and run npm install
+runing npm install 
+
+
+global exception handler , only expose the outer message, log the rest
+
+validate model logic using data annotation
+validate business logic using service

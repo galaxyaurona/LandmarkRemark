@@ -11,6 +11,10 @@ namespace LandmarkRemark.Services
         IEnumerable<User> GetUsers();
         Task<User> GetAsync(int userId);
         Task<User> GetUserByUsername(string username);
+        Task<User> AddUserAsync(string username);
+
+        Task<bool> UserExists(int userId);
+
     }
     public class UserService : IUserService
     {
@@ -34,6 +38,19 @@ namespace LandmarkRemark.Services
         {
             return _userRepository
                 .FindOneAsync(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task<User> AddUserAsync(string username)
+        {
+            return await _userRepository.AddAsync(new User()
+            {
+                Username = username
+            });
+        }
+
+        public async Task<bool> UserExists(int userId)
+        {
+            return await _userRepository.UserExist(userId);
         }
         
     }

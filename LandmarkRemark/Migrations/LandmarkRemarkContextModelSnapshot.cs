@@ -35,7 +35,7 @@ namespace LandmarkRemark.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("LandmarkRemark.Models.User", b =>
@@ -43,9 +43,13 @@ namespace LandmarkRemark.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Username");
+                    b.Property<string>("Username")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

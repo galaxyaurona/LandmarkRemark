@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LandmarkRemark.Migrations
 {
     [DbContext(typeof(LandmarkRemarkContext))]
-    [Migration("20190906035809_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20190907152031_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,7 @@ namespace LandmarkRemark.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("LandmarkRemark.Models.User", b =>
@@ -45,9 +45,13 @@ namespace LandmarkRemark.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Username");
+                    b.Property<string>("Username")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

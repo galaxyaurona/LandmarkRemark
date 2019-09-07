@@ -9,6 +9,12 @@ using System.Runtime.InteropServices;
 using System;
 using LandmarkRemark.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using LandmarkRemark.Services;
+using LandmarkRemark.Repositories;
+
 namespace LandmarkRemark
 {
     public class Startup
@@ -43,7 +49,17 @@ namespace LandmarkRemark
             var connectionStringKey = useSQLite ? "LandmarkRemarkContextSQLite" : "LandmarkRemarkContext";
             var connectionString = Configuration.GetConnectionString(connectionStringKey);
 
+            // add db context
             services.AddDbContext<LandmarkRemarkContext>(options => SetupContextOptions(options, connectionString, useSQLite));
+
+            // dependency injection here
+            //because EF dbContext default = scoped, so need to match the DI graph
+
+            // repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            //service
+            services.AddScoped<IUserService, UserService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -57,16 +73,21 @@ namespace LandmarkRemark
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            // global Exception catcher and return 500 with error message array
+            app.UseExceptionHandler(errorApp =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
+                errorApp.Run(async context =>
+                {
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "application/json";
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
+                    var response = new ErrorResponse();
+                    response.Errors.Add(exceptionHandlerPathFeature?.Error.Message);
+                    var responseString = JsonConvert.SerializeObject(response);
+                    await context.Response.WriteAsync(responseString);
+                });
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -76,17 +97,23 @@ namespace LandmarkRemark
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
+
             });
 
-            app.UseSpa(spa =>
+            // return 404 not found for api, only redirect endpoint not goign to API
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api", StringComparison.OrdinalIgnoreCase), builder =>
             {
-                spa.Options.SourcePath = "ClientApp";
+               builder.UseSpa(spa =>
+               {
+                   spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
+                   if (env.IsDevelopment())
+                   {
+                       spa.UseReactDevelopmentServer(npmScript: "start");
+                   }
+               });
             });
+
         }
     }
 }

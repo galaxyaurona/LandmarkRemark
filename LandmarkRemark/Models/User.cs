@@ -7,6 +7,7 @@ namespace LandmarkRemark.Models
 {
     public class User : EntityBase
     {
+        [Required(ErrorMessage="Username is required")]
         public string Username { get; set; }
         public List<Location> Locations { get; set; }
     }
