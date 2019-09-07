@@ -1,5 +1,6 @@
 ﻿using LandmarkRemark.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace LandmarkRemark.Repositories
         Task<User> AddAsync(User user);
         IEnumerable<User> Find(Func<User, bool> predicate);
         Task<User> FindOneAsync(Expression<Func<User, bool>> predicate);
+
+        Task<bool> UserExist(int userId);
     }
     public class UserRepository : IUserRepository
     {
@@ -24,17 +27,25 @@ namespace LandmarkRemark.Repositories
         {
             _context = context;
         }
-
+        private IIncludableQueryable<User,List<Location>> _usersWithIncludes
+        {
+            get
+            {
+                return _context.Users.Include(x => x.Locations);
+            }
+           
+        }
         public async Task<User> AddAsync(User user)
         {
             var result = await _context.Users.AddAsync(user);
+
+            await _context.SaveChangesAsync();
             return result.Entity;
         }
 
         public async Task<User> GetAsync(int userId)
         {
-            return await _context.Users
-              .Include(b => b.Locations)
+            return await _usersWithIncludes
               .FirstOrDefaultAsync(user => user.Id == userId);
         }
 
@@ -44,13 +55,17 @@ namespace LandmarkRemark.Repositories
         }
         public IEnumerable<User> Find(Func<User,bool> predicate)
         {
-            return _context.Users.Include(u => u.Locations).Where(predicate);
+            return _usersWithIncludes.Where(predicate);
         }
         public async Task<User> FindOneAsync(Expression<Func<User, bool>> predicate)
         {
-            return await _context.Users
-                .Include(u => u.Locations)
+            return await _usersWithIncludes
                 .FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<bool> UserExist(int userId)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == userId);
         }
 
     }
