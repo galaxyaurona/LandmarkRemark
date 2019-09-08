@@ -5,10 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LandmarkRemark.Models
 {
+    public struct UserDataAnnotationError
+    {
+        public const string USERNAME_IS_REQUIRED = "Username is required";
+    }
     public class User : EntityBase
     {
-        [Required(ErrorMessage="Username is required")]
+        [Required(ErrorMessage= UserDataAnnotationError.USERNAME_IS_REQUIRED)]
         public string Username { get; set; }
-        public List<Location> Locations { get; set; }
+        public List<Note> Notes { get; set; }
     }
 }

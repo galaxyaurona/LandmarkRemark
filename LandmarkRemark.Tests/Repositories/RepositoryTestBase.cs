@@ -8,6 +8,8 @@ namespace LandmarkRemark.Tests.Repositories
     public class RepositoryTestBase : IDisposable
     {
         protected readonly LandmarkRemarkContext _landmarkRemarkContext;
+        //base class shouldn't be able to access this,
+        // only keep reference to close connection
         private readonly SqliteConnection connection;
         // use in memory database instead of mocking for repositories test
         // ensure new context is instantiate every test , matching the
@@ -24,7 +26,6 @@ namespace LandmarkRemark.Tests.Repositories
             _landmarkRemarkContext.Database.EnsureCreated();
         }
         // cleanup after everytest
-
         public void Dispose()
         {
             _landmarkRemarkContext.Dispose();

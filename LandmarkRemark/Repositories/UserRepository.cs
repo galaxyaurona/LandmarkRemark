@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace LandmarkRemark.Repositories
 {
+  
     public interface IUserRepository
     {
         IEnumerable<User> GetUsers();
@@ -17,7 +18,7 @@ namespace LandmarkRemark.Repositories
         IEnumerable<User> Find(Func<User, bool> predicate);
         Task<User> FindOneAsync(Expression<Func<User, bool>> predicate);
 
-        Task<bool> UserExist(int userId);
+        Task<bool> UserExistAsync(int userId);
         User Add(User user);
     }
     public class UserRepository : IUserRepository
@@ -28,15 +29,14 @@ namespace LandmarkRemark.Repositories
         {
             _context = context;
         }
-        private IIncludableQueryable<User,List<Location>> _usersWithIncludes
+        private IIncludableQueryable<User,List<Note>> _usersWithIncludes
         {
             get
             {
-                return _context.Users.Include(x => x.Locations);
+                return _context.Users.Include(x => x.Notes);
             }
-           
         }
-        // helpful for seeding in constructor in test
+        // helpful for seeding in unit test class construct
         public User Add(User user)
         {
             var result =  _context.Users.Add(user);
@@ -65,6 +65,8 @@ namespace LandmarkRemark.Repositories
         {
             return _context.Users.AsEnumerable();
         }
+
+        // Generic find, can be useful to find userId with terms
         public IEnumerable<User> Find(Func<User,bool> predicate)
         {
             return _usersWithIncludes.Where(predicate);
@@ -75,7 +77,7 @@ namespace LandmarkRemark.Repositories
                 .FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<bool> UserExist(int userId)
+        public async Task<bool> UserExistAsync(int userId)
         {
             return await _context.Users.AnyAsync(u => u.Id == userId);
         }

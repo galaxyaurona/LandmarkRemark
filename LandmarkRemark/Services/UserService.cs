@@ -6,15 +6,19 @@ using LandmarkRemark.Models;
 using LandmarkRemark.Repositories;
 namespace LandmarkRemark.Services
 {
+    public struct UserServiceError
+    {
+        public const string EMPTY_USERNAME_ERROR = "Username cannot be empty";
+        public const string USERNAME_EXISTED_ERROR = "This username already exist";
+    }
     public interface IUserService
     {
         IEnumerable<User> GetUsers();
         Task<User> GetAsync(int userId);
         Task<User> GetUserByUsername(string username);
-        Task<User> AddUserAsync(string username);
-
-        Task<bool> UserExists(int userId);
-
+        Task<ModifyingActionResult<User>> AddUserAsync(string username);
+        Task<bool> UserExistsAsync(int userId);
+    
     }
     public class UserService : IUserService
     {
@@ -40,17 +44,39 @@ namespace LandmarkRemark.Services
                 .FindOneAsync(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<User> AddUserAsync(string username)
+        public async Task<ModifyingActionResult<User>> AddUserAsync(string username)
         {
-            return await _userRepository.AddAsync(new User()
+
+            var errors = new List<string>();
+            if (string.IsNullOrWhiteSpace(username)){
+                errors.Add(UserServiceError.EMPTY_USERNAME_ERROR);
+            }
+            else if (await GetUserByUsername(username) != default)
+            {
+                errors.Add(UserServiceError.USERNAME_EXISTED_ERROR);
+            }
+            var result = new ModifyingActionResult<User>()
+            {
+                Success = false,
+                Errors = errors,
+            };
+            
+            if (errors.Count > 0)
+            {
+                return result;  
+            }
+            var addedUser = await _userRepository.AddAsync(new User()
             {
                 Username = username
             });
+            result.Success = true;
+            result.Data = addedUser;
+            return result;
         }
 
-        public async Task<bool> UserExists(int userId)
+        public async Task<bool> UserExistsAsync(int userId)
         {
-            return await _userRepository.UserExist(userId);
+            return await _userRepository.UserExistAsync(userId);
         }
         
     }

@@ -57,7 +57,7 @@ namespace LandmarkRemark
 
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<INoteRepository, NoteRepository>();
             //service
             services.AddScoped<IUserService, UserService>();
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LandmarkRemark.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,22 +21,22 @@ namespace LandmarkRemark.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Locations",
+                name: "Notes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<string>(nullable: false),
                     Lat = table.Column<double>(nullable: false),
                     Lng = table.Column<double>(nullable: false),
-                    Note = table.Column<string>(nullable: true),
                     Timestamp = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.PrimaryKey("PK_Notes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Locations_Users_UserId",
+                        name: "FK_Notes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -44,8 +44,8 @@ namespace LandmarkRemark.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Locations_UserId",
-                table: "Locations",
+                name: "IX_Notes_UserId",
+                table: "Notes",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -58,7 +58,7 @@ namespace LandmarkRemark.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "Notes");
 
             migrationBuilder.DropTable(
                 name: "Users");

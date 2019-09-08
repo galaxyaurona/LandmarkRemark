@@ -16,16 +16,17 @@ namespace LandmarkRemark.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
 
-            modelBuilder.Entity("LandmarkRemark.Models.Location", b =>
+            modelBuilder.Entity("LandmarkRemark.Models.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Content")
+                        .IsRequired();
+
                     b.Property<double>("Lat");
 
                     b.Property<double>("Lng");
-
-                    b.Property<string>("Note");
 
                     b.Property<DateTime>("Timestamp");
 
@@ -35,7 +36,7 @@ namespace LandmarkRemark.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("LandmarkRemark.Models.User", b =>
@@ -54,10 +55,10 @@ namespace LandmarkRemark.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LandmarkRemark.Models.Location", b =>
+            modelBuilder.Entity("LandmarkRemark.Models.Note", b =>
                 {
                     b.HasOne("LandmarkRemark.Models.User", "Owner")
-                        .WithMany("Locations")
+                        .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

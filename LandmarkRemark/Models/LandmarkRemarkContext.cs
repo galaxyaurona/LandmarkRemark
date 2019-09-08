@@ -57,6 +57,6 @@ namespace LandmarkRemark.Models
 
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public DbSet<Note> Notes { get; set; }
     }
 }

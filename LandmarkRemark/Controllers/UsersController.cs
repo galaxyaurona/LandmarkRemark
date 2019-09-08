@@ -30,26 +30,60 @@ namespace LandmarkRemark.Controllers
 
         [HttpGet("username/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-     
-        public async Task<ActionResult<User>> GetUserByUsername(string username)
+
+        public async Task<IActionResult> GetUserByUsername(string username)
         {
             // try to get the user with username (ignore case)
             var user = await _userService.GetUserByUsername(username);
-            if (user == default(User)) {
+            if (user == default(User))
+            {
                 // add new user if doesn't exist
-                var newUser = await _userService.AddUserAsync(username);
-                return CreatedAtAction(nameof(GetUserByUsername), newUser);
-            } else {
+
+                return NotFound(new ErrorResponse()
+                {
+                    Errors = new List<string>()
+                    {
+                        $"Does not found user with username: {username}"
+                    },
+                    Message = "User not found"
+                });
+            }
+            else
+            {
                 return Ok(user);
             }
         }
-        [HttpGet("GenerateException")]
-        public async Task GenerateException()
+
+        // trying to bypass data annotation validation here
+        // by using dynamic instead of concrete class
+
+        [HttpPost("")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> CreateUser(dynamic user)
         {
-            await _userService.AddUserAsync(null);
+
+            // try to add user
+            var result = await _userService.AddUserAsync(user?.Username);
+            if (result.Success)
+            {
+                return CreatedAtAction(nameof(GetUserByUsername), result.Data);
+            }
+            else
+            {
+                return UnprocessableEntity(new ErrorResponse()
+                {
+                    Errors = result.Errors,
+                    Message = "Error creating users"
+                });
+            }
         }
+
+
+
 
     }
 }
