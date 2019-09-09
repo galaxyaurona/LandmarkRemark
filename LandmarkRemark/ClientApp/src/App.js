@@ -2,17 +2,16 @@
 import { Route } from 'react-router';
 import Layout from './components/Layout';
 import Home from './components/Home';
-import Counter from './components/Counter';
-import FetchData from './components/FetchData';
+import Search from './components/Search';
 import Login from './components/Login';
 import RequireAuth from './components/RequiredAuth'
 export default () => (
   <div>
 
     <Layout>
-      <Route exact path='/' component={Home} />
+      <Route exact path='/' component={RequireAuth(Home)} />
       <Route path='/Login' component={Login} />
-      <Route path='/counter' component={Counter} />
+      <Route path='/search' component={RequireAuth(Search)} />
 
     </Layout>
     

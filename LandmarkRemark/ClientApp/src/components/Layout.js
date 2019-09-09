@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
 import "./css/Layout.css"

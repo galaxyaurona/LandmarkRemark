@@ -60,6 +60,7 @@ namespace LandmarkRemark
             services.AddScoped<INoteRepository, NoteRepository>();
             //service
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<INoteService, NoteService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

@@ -6,6 +6,7 @@ using LandmarkRemark.Models;
 using LandmarkRemark.Repositories;
 namespace LandmarkRemark.Services
 {
+    
     public struct UserServiceError
     {
         public const string EMPTY_USERNAME_ERROR = "Username cannot be empty";

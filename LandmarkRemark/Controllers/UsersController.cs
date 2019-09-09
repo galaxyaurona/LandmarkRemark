@@ -29,7 +29,13 @@ namespace LandmarkRemark.Controllers
         {
             return await _userService.GetAsync(id);
         }
+        private void RemoveCircularRef(User user)
+        {
+            var notesWithoutCircularRef = user.Notes.Select(x => { x.Owner = null; return x; });
 
+            user.Notes = notesWithoutCircularRef.ToList();
+      
+        }
         [HttpGet("username/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -43,6 +49,8 @@ namespace LandmarkRemark.Controllers
             }
             else
             {
+                // should convert to function later;
+                RemoveCircularRef(user);
                 return Ok(user);
             }
         }
@@ -79,6 +87,7 @@ namespace LandmarkRemark.Controllers
             }
             else
             {
+                RemoveCircularRef(user);
                 return Ok(user);
             }
         }

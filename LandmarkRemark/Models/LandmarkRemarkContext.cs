@@ -35,9 +35,7 @@ namespace LandmarkRemark.Models
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
-            
 
-            // user relationship
 
         }
         // add validation here using Data annotation

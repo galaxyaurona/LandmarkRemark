@@ -1,4 +1,6 @@
 ﻿using LandmarkRemark.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +22,20 @@ namespace LandmarkRemark.Repositories
         {
             _context = context;
         }
+        // only include username, avoid circular referece
+        private IIncludableQueryable<Note, User> _noteWithIncludes
+        {
+            get
+            {
+                return _context.Notes.Include(x => x.Owner);
+            }
+        }
 
         // need to do pagination here because potentially thousand of note
 
         public IEnumerable<Note> Find(Func<Note, bool> predicate)
         {
-            return _context.Notes.Where(predicate);
+            return _noteWithIncludes.Where(predicate);
 
         }
 
@@ -34,7 +44,7 @@ namespace LandmarkRemark.Repositories
             var result = await _context.Notes.AddAsync(note);
             // to trigger validation
             await _context.SaveChangesAsyncWithValidation();
-
+            
             return result.Entity;
         }
 

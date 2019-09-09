@@ -4,12 +4,11 @@ import {
     ControlLabel, FormControl,
     Alert, Button,
 } from "react-bootstrap";
-import Panel from "react-bootstrap/lib/Panel"
 import "./css/Login.css"
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actionCreators } from "../store/Login"
-import { push } from 'react-router-redux'
+
 class Login extends Component {
 
     constructor(props) {
@@ -45,7 +44,9 @@ class Login extends Component {
         }
     }
     // render error alert from list of errors
-    renderErrorAlert(errors) {
+    renderErrorAlert() {
+
+        const { errors } = this.props
         if (errors.length) {
             return <Alert bsStyle="danger">
                 <ul>
@@ -61,32 +62,28 @@ class Login extends Component {
 
         return (
 
-            <div className="full-height flex flex-center" >
-                <Panel bsStyle="primary">
-                    <Panel.Heading>Login</Panel.Heading>
-                    <Panel.Body>
-                        <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                            <FormGroup controlId="username">
-                                <ControlLabel>User name</ControlLabel>
-                                <FormControl
-                                    type="text"
-                                    value={this.state.username}
-                                    placeholder="e.g: firstUser"
-                                    onChange={this.handleChange}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Button type="submit"
-                                    disabled={this.props.isLoading}
-                                    bsStyle="primary"
-                                    className="pull-right"
-                                    onClick={this.tryLogin}>Sign in</Button>
-                            </FormGroup>
-                        </Form>
-                        {this.renderErrorAlert(this.props.errors)}
-                    </Panel.Body>
+            <div className="full-height flex flex-center flex-column" >
 
-                </Panel>
+                <h2>Login</h2>
+                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                    <FormGroup controlId="username">
+                        <ControlLabel>User name</ControlLabel>
+                        <FormControl
+                            type="text"
+                            value={this.state.username}
+                            placeholder="e.g: firstUser"
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Button type="submit"
+                            disabled={this.props.isLoading}
+                            bsStyle="primary"
+                            className="pull-right"
+                            onClick={this.tryLogin}>Sign in</Button>
+                    </FormGroup>
+                </Form>
+                {this.renderErrorAlert()}
             </div>
 
         );

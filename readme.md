@@ -29,6 +29,9 @@ global exception handler , only expose the outer message, log the rest
 validate model logic using data annotation where I can
 validate business logic using service
 
+limitation:
+bug frontend nav, click stuff
+
 Future work (normalize lat lng) so many user, many locations,
  each user-location relationship represent by a note
  Using validator , and dependency injection for scalability

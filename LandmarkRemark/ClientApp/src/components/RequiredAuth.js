@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 
-// a HOC to compose a component
+// a HOC to compose a component that check for auth and redirect
 export default function (ComposedComponent) {
     class RequireAuth extends Component {
         componentWillMount() {
