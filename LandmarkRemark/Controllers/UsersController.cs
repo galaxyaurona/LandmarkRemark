@@ -11,6 +11,8 @@ using LandmarkRemark.Services;
 
 namespace LandmarkRemark.Controllers
 {
+    //protected class ModifyUserRequest : User { }
+
     [Route("/api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -30,44 +32,23 @@ namespace LandmarkRemark.Controllers
 
         [HttpGet("username/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
             // try to get the user with username (ignore case)
             var user = await _userService.GetUserByUsername(username);
             if (user == default(User))
             {
-                // add new user if doesn't exist
-
-                return NotFound(new ErrorResponse()
-                {
-                    Errors = new List<string>()
-                    {
-                        $"Does not found user with username: {username}"
-                    },
-                    Message = "User not found"
-                });
+                return NoContent();
             }
             else
             {
                 return Ok(user);
             }
         }
-
-        // trying to bypass data annotation validation here
-        // by using dynamic instead of concrete class
-
-        [HttpPost("")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> CreateUser(dynamic user)
+        private async Task<IActionResult> CreateUser(string username)
         {
-
-            // try to add user
-            var result = await _userService.AddUserAsync(user?.Username);
+            var result = await _userService.AddUserAsync(username);
             if (result.Success)
             {
                 return CreatedAtAction(nameof(GetUserByUsername), result.Data);
@@ -76,10 +57,41 @@ namespace LandmarkRemark.Controllers
             {
                 return UnprocessableEntity(new ErrorResponse()
                 {
-                    Errors = result.Errors,
+                    Errors = result.Errors?.ToList(),
                     Message = "Error creating users"
                 });
             }
+        }
+
+
+        // Login user, or create user if not found
+        [HttpPost("login_or_signup")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> LoginOrCreate(User request)
+        {
+            // try to get the user with username (ignore case)
+            var user = await _userService.GetUserByUsername(request.Username);
+            if (user == default(User))
+            {
+                return await CreateUser(request.Username);
+            }
+            else
+            {
+                return Ok(user);
+            }
+        }
+
+
+        // trying to bypass data annotation validation here
+        // by using dynamic instead of concrete class
+        [HttpPost("")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> CreateUser(User user)
+        {
+            return await CreateUser(user.Username);
         }
 
 

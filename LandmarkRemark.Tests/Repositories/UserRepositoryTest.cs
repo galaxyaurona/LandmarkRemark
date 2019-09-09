@@ -55,7 +55,7 @@ namespace LandmarkRemark.Tests.Repositories
         public async Task GetUserById_ReturnDefaultForNotExistingId()
         {
             var notAddedUsers = await _userRepository.GetAsync(-1);
-            Assert.Equal(default, notAddedUsers);
+            Assert.Equal(default(User), notAddedUsers);
         }
 
 
@@ -184,7 +184,7 @@ namespace LandmarkRemark.Tests.Repositories
         public async Task FindOneAsync_DoesNotFindUsernameWithWordRandom()
         {
             var foundUser = await _userRepository.FindOneAsync(user => FindUsernameContainWordRandom(user));
-            Assert.Equal(default, foundUser);
+            Assert.Equal(default(User), foundUser);
         }
 
 

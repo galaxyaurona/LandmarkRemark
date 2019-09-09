@@ -92,7 +92,7 @@ namespace LandmarkRemark.Tests.Services
         {
             var nonExistUser = await _userService.GetAsync(10);
             _mockUserRepository.Verify(mr => mr.GetAsync(It.IsAny<int>()), Times.Once());
-            Assert.Equal(default, nonExistUser);
+            Assert.Equal(default(User), nonExistUser);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace LandmarkRemark.Tests.Services
             var nonExistUser = await _userService.GetUserByUsername("Random");
             _mockUserRepository.Verify(mr => mr.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>())
             , Times.Once());
-            Assert.Equal(default, nonExistUser);
+            Assert.Equal(default(User), nonExistUser);
         }
 
         [Theory]

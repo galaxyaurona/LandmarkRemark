@@ -51,7 +51,7 @@ namespace LandmarkRemark.Services
             if (string.IsNullOrWhiteSpace(username)){
                 errors.Add(UserServiceError.EMPTY_USERNAME_ERROR);
             }
-            else if (await GetUserByUsername(username) != default)
+            else if (await GetUserByUsername(username) != default(User))
             {
                 errors.Add(UserServiceError.USERNAME_EXISTED_ERROR);
             }

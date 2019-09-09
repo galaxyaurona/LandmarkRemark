@@ -1,0 +1,14 @@
+.full-height {
+    height: 100vh;
+}
+.flex {
+    display: flex;
+}
+.flex-center {
+    justify-content: center;
+    align-items: center;
+} 
+.panel-body {
+    min-width: 300px;
+    padding:25px
+}
