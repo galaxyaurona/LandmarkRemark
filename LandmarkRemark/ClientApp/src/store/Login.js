@@ -1,4 +1,4 @@
-const API_URL = 'api/Users/'
+const API_URL = 'api/Users'
 const LOGIN = 'LOGIN';
 const LOGIN_INITIATED = LOGIN + '_INITIATED'
 const LOGIN_SUCCESS = LOGIN + '_SUCCESS'
