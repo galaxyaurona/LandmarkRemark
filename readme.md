@@ -1,7 +1,6 @@
 # Landmark Remark
 
-## Introduction
-This source code contain the solution to Tigerspike technical challenge's **Landmark remark**
+
 
 ## Requirement
 ### Explicit requirement
